@@ -3,10 +3,12 @@ package com.example.netflixclonebackend.Service;
 import com.example.netflixclonebackend.Model.User;
 import com.example.netflixclonebackend.Repository.UserRepository;
 import com.example.netflixclonebackend.utils.Validator;
+import com.example.netflixclonebackend.utils.ValidatorResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import javax.swing.text.html.Option;
 import java.util.Optional;
 
 public class UserService {
@@ -15,11 +17,10 @@ public class UserService {
 
     public ResponseEntity<?> registerUser(User user) {
        try {
-          Boolean isValidEmail = Validator.validateEmail(user.getEmail());
-           if (!isValidEmail) {
-               throw new IllegalStateException("email not valid");
+           boolean existingUser = userRepository.findByEmail(user.getEmail()).isPresent();
+           if(existingUser) {
+               return ResponseEntity.badRequest().body("User Already Exist!");
            }
-
 
            userRepository.save(user);
            return ResponseEntity.status(HttpStatus.OK).body("User registered successfully");
@@ -28,17 +29,12 @@ public class UserService {
        }
    }
 
-    public ResponseEntity<?> login(User loggedInUser) {
-//       Response response = null;
+    public ResponseEntity<?> login(User user) {
        try{
-           Optional<User> userDetail = userRepository.findByEmailAndPassword(loggedInUser.getEmail(), loggedInUser.getPassword());
-//           response.setMessage("Login Successful");
-//           response.setData(userDetail);
-           return ResponseEntity.ok().body(userDetail);
+           Optional<User>  loggedInUser= userRepository.findByEmailAndPassword(user.getEmail(), user.getPassword());
+           return ResponseEntity.ok().body(loggedInUser);
        }catch(Exception e) {
-//           response.setMessage("There was an error!");
-//           response.setData(Optional.empty());
-           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("There was an error!");
+           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("There was an error!Try again!");
        }
     }
 }

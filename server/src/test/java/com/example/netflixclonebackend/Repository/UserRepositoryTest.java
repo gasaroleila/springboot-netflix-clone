@@ -24,4 +24,6 @@ public class UserRepositoryTest {
       Optional<User> user = userRepository.findByEmailAndPassword("leila@gmail.com","123456");
       assertTrue(user.isPresent());
     }
+
+
 }

@@ -2,6 +2,7 @@ package com.example.netflixclonebackend.Service;
 
 import com.example.netflixclonebackend.Model.User;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.example.netflixclonebackend.Repository.UserRepository;
@@ -29,11 +30,17 @@ public class UserServiceTest {
 
     @Test
     public void signUp() {
-        User newUser = new User("Gasaro Leila", "leila@gmail.com", "123456");
+        User newUser = new User("Gasaro Leila", "leila@gmail.com", "pass1234");
+        User userExist = new User("John Smith", "smith@gmail.com", "12345678");
+
+        when(userRepositoryMock.findByEmail(userExist.getEmail())).thenReturn(Optional.of(userExist));
        when(userRepositoryMock.save(newUser)).thenReturn(newUser);
 
-        ResponseEntity<?> registerUser = userService.registerUser(newUser);
-        assertTrue(registerUser.getStatusCode().is2xxSuccessful());
+        ResponseEntity<?> registerUser = user   Service.registerUser(userExist);
+
+        assertTrue("User Already exist!", registerUser.getStatusCode().isError());
+        assertTrue((String) registerUser.getBody(),registerUser.getStatusCode().is2xxSuccessful());
+
     }
 
     @Test
