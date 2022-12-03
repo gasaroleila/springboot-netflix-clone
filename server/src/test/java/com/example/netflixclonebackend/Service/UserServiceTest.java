@@ -6,6 +6,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.example.netflixclonebackend.Repository.UserRepository;
+import com.example.netflixclonebackend.utils.LoginRequest;
 import org.apache.coyote.Response;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,21 +34,43 @@ public class UserServiceTest {
         User newUser = new User("Gasaro Leila", "leila@gmail.com", "pass1234");
         User userExist = new User("John Smith", "smith@gmail.com", "12345678");
 
-        when(userRepositoryMock.findByEmail(userExist.getEmail())).thenReturn(Optional.of(userExist));
-       when(userRepositoryMock.save(newUser)).thenReturn(newUser);
+        when(userRepositoryMock.findByEmail(newUser.getEmail())).thenReturn(Optional.empty());
+        when(userRepositoryMock.save(newUser)).thenReturn(newUser);
 
-        ResponseEntity<?> registerUser = user   Service.registerUser(userExist);
+        ResponseEntity<?> registerUser = userService.registerUser(newUser);
 
-        assertTrue("User Already exist!", registerUser.getStatusCode().isError());
+//        assertTrue("User Already exist!", registerUser.getStatusCode().isError());
         assertTrue((String) registerUser.getBody(),registerUser.getStatusCode().is2xxSuccessful());
 
     }
 
+//    @Test
+//    public void signIn() {
+//        User loggedInUser = new User("leila@gmail.com", "123456");
+//        User user = new User("Gasaro Leila","leila@gmail.com", "123456");
+//        when(userRepositoryMock.findByEmailAndPassword(loggedInUser.getEmail(), loggedInUser.getPassword())).thenReturn(Optional.of(user));
+//        assertEquals(Optional.of(user),userService.login(loggedInUser).getBody());
+//    }
+
+
     @Test
-    public void signIn() {
-        User loggedInUser = new User("leila@gmail.com", "123456");
-        User user = new User("Gasaro Leila","leila@gmail.com", "123456");
-        when(userRepositoryMock.findByEmailAndPassword(loggedInUser.getEmail(), loggedInUser.getPassword())).thenReturn(Optional.of(user));
-        assertEquals(Optional.of(user),userService.login(loggedInUser).getBody());
+    public void login() {
+        LoginRequest loginRequest = new LoginRequest("leila@gmail.com", "pass1234");
+        User user = new User("Gasaro Leila", "leila@gmail.com", "pass1234");
+        when(userRepositoryMock.findByEmailAndPassword(loginRequest.getEmail(), loginRequest.getPassword())).thenReturn(Optional.of(user));
+
+        ResponseEntity<?> loggedInUser = userService.login(loginRequest);
+        assertEquals(Optional.of(user), loggedInUser.getBody());
+
+    }
+
+    @Test
+    public void login_NotFound() {
+        LoginRequest existingUser = new LoginRequest( "leila@gmail.com", "pass1234");
+        when(userRepositoryMock.findByEmailAndPassword(existingUser.getEmail(), existingUser.getPassword())).thenReturn(Optional.empty());
+
+        ResponseEntity<?> loggedInUser = userService.login(existingUser);
+        assertTrue("Invalid email or password",loggedInUser.getStatusCode().isError());
+
     }
 }
