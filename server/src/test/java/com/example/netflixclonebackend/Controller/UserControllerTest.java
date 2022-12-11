@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 
 import java.util.Optional;
@@ -48,7 +49,7 @@ public class UserControllerTest {
 
     @Test
     public void saveUser_success() throws Exception {
-        User newUser = new User("Gasaro Leila", "leila@gmail.com", "pass1234");
+        User newUser = new User("", "leila", "pass1234");
         String userJson = new ObjectMapper().writeValueAsString(newUser);
         ResponseEntity<String> saveUser = ResponseEntity.status(HttpStatus.OK).body("User registered successfully");
         when(userServiceMock.registerUser(newUser)).thenReturn(saveUser);
@@ -63,6 +64,7 @@ public class UserControllerTest {
         MvcResult result = mockMvc
                 .perform(request.with(csrf()))
                 .andExpect(status().isOk())
+                .andDo(MockMvcResultHandlers.print())
                 .andReturn();
 
 
@@ -79,7 +81,7 @@ public class UserControllerTest {
 
     @Test
     public void login_success() throws Exception {
-        LoginRequest userDetails = new LoginRequest("leila@gmail.com", "pass1234");
+        User userDetails = new User("leila@gmail.com", "pass1234");
         String userDetailsJson = new ObjectMapper().writeValueAsString(userDetails);
         User loggedInUser = new User("Gasaro Leila", "leila@gmail.com", "pass1234");
         ResponseEntity<?> savedUser = ResponseEntity.ok().body(loggedInUser);

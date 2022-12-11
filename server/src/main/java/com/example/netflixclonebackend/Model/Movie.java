@@ -2,10 +2,8 @@ package com.example.netflixclonebackend.Model;
 
 import com.example.netflixclonebackend.utils.Genre;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.List;
 
 //{
@@ -19,35 +17,59 @@ import java.util.List;
 //  }
 @Entity
 public class Movie {
-
-    private String title;
-    private Float rating;
-    private String overview;
-    private String poster;
-    private String banner;
-
-    private List<Genre> genre;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", nullable = false)
     private Long id;
 
-    public Movie() {};
+    private String title;
+    private double vote_average;
+    private double vote_count;
+    private LocalDate release_date;
 
-    public Movie(String title, Float rating, String overview, String poster, String banner, List<Genre> genre) {
-        this.title = title;
-        this.rating = rating;
-        this.overview = overview;
-        this.poster = poster;
-        this.banner = banner;
-        this.genre = genre;
+    private String overview;
+    private String poster_path;
+    private String backdrop_path;
+    private String original_language;
+
+    @Transient
+    private List<Genre> genres;
+
+    public Long getId() {
+        return id;
     }
-
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    @Id
-    public Long getId() {
-        return id;
+
+    public Movie() {
+    }
+
+    public Movie(String title, double vote_average, double vote_count, LocalDate release_date, String overview, String poster_path, String backdrop_path, String original_language, List<Genre> genre, Long id) {
+        this.title = title;
+        this.vote_average = vote_average;
+        this.vote_count = vote_count;
+        this.release_date = release_date;
+        this.overview = overview;
+        this.poster_path = poster_path;
+        this.backdrop_path = backdrop_path;
+        this.original_language = original_language;
+        this.genres = genre;
+        this.id = id;
+    }
+
+    public Movie(String title, double vote_average, double vote_count, LocalDate release_date, String overview, String poster_path, String backdrop_path, String original_language, List<Genre> genre) {
+        this.title = title;
+        this.vote_average = vote_average;
+        this.vote_count = vote_count;
+        this.release_date = release_date;
+        this.overview = overview;
+        this.poster_path = poster_path;
+        this.backdrop_path = backdrop_path;
+        this.original_language = original_language;
+        this.genres = genre;
     }
 
     public String getTitle() {
@@ -58,12 +80,28 @@ public class Movie {
         this.title = title;
     }
 
-    public Float getRating() {
-        return rating;
+    public double getVote_average() {
+        return vote_average;
     }
 
-    public void setRating(Float rating) {
-        this.rating = rating;
+    public void setVote_average(Float vote_average) {
+        this.vote_average = vote_average;
+    }
+
+    public double getVote_count() {
+        return vote_count;
+    }
+
+    public void setVote_count(Float vote_count) {
+        this.vote_count = vote_count;
+    }
+
+    public LocalDate getRelease_date() {
+        return release_date;
+    }
+
+    public void setRelease_date(LocalDate release_date) {
+        this.release_date = release_date;
     }
 
     public String getOverview() {
@@ -74,28 +112,36 @@ public class Movie {
         this.overview = overview;
     }
 
-    public String getPoster() {
-        return poster;
+    public String getPoster_path() {
+        return poster_path;
     }
 
-    public void setPoster(String poster) {
-        this.poster = poster;
+    public void setPoster_path(String poster_path) {
+        this.poster_path = poster_path;
     }
 
-    public String getBanner() {
-        return banner;
+    public String getBackdrop_path() {
+        return backdrop_path;
     }
 
-    public void setBanner(String banner) {
-        this.banner = banner;
+    public void setBackdrop_path(String backdrop_path) {
+        this.backdrop_path = backdrop_path;
     }
 
-
-    public List<Genre> getGenre() {
-        return genre;
+    public String getOriginal_language() {
+        return original_language;
     }
 
-    public void setGenre(List<Genre> genre) {
-        this.genre = genre;
+    public void setOriginal_language(String original_language) {
+        this.original_language = original_language;
     }
+
+    public List<Genre> getGenres() {
+        return genres;
+    }
+
+    public void setGenres(List<Genre> genre) {
+        this.genres = genre;
+    }
+
 }

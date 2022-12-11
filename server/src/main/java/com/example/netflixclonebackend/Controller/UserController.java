@@ -8,12 +8,13 @@ import com.example.netflixclonebackend.utils.ValidatorResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class UserController {
 
@@ -21,10 +22,10 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody  User user) {
         try {
+            System.out.println("user"+user.toString());
             ValidatorResponse validatorResponse = validator.validateRegisterData(user.getUsername(), user.getEmail(), user.getPassword());
             if (!validatorResponse.getValidation()) {
                 return ResponseEntity.badRequest().body(validatorResponse.getMessage());
@@ -41,7 +42,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest userData) {
+    public ResponseEntity<?> login(@RequestBody User userData) {
         try {
             ValidatorResponse validatorResponse = validator.validateLoginData(userData.getEmail(), userData.getPassword());
             if (!validatorResponse.getValidation()) {

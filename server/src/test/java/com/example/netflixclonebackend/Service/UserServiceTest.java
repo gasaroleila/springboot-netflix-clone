@@ -37,27 +37,19 @@ public class UserServiceTest {
         when(userRepositoryMock.findByEmail(newUser.getEmail())).thenReturn(Optional.empty());
         when(userRepositoryMock.save(newUser)).thenReturn(newUser);
 
-        ResponseEntity<?> registerUser = userService.registerUser(newUser);
+        ResponseEntity<?> registerUser = userService.registerUser(userExist);
 
-//        assertTrue("User Already exist!", registerUser.getStatusCode().isError());
+        assertTrue("User Already exist!", registerUser.getStatusCode().isError());
         assertTrue((String) registerUser.getBody(),registerUser.getStatusCode().is2xxSuccessful());
 
     }
 
-//    @Test
-//    public void signIn() {
-//        User loggedInUser = new User("leila@gmail.com", "123456");
-//        User user = new User("Gasaro Leila","leila@gmail.com", "123456");
-//        when(userRepositoryMock.findByEmailAndPassword(loggedInUser.getEmail(), loggedInUser.getPassword())).thenReturn(Optional.of(user));
-//        assertEquals(Optional.of(user),userService.login(loggedInUser).getBody());
-//    }
-
 
     @Test
     public void login() {
-        LoginRequest loginRequest = new LoginRequest("leila@gmail.com", "pass1234");
-        User user = new User("Gasaro Leila", "leila@gmail.com", "pass1234");
-        when(userRepositoryMock.findByEmailAndPassword(loginRequest.getEmail(), loginRequest.getPassword())).thenReturn(Optional.of(user));
+        User loginRequest = new User ("leila@gmail.com", "pass1234");
+        User user = new User("Gasaro Leila", "leila@gmail.com", "$2a$10$AKyngbD6wOuz.OGZrFXLfek33c505HukDPo7G88G/7/B7x9s5EKjW");
+        when(userRepositoryMock.findByEmail(loginRequest.getEmail())).thenReturn(Optional.of(user));
 
         ResponseEntity<?> loggedInUser = userService.login(loginRequest);
         assertEquals(Optional.of(user), loggedInUser.getBody());
@@ -66,11 +58,12 @@ public class UserServiceTest {
 
     @Test
     public void login_NotFound() {
-        LoginRequest existingUser = new LoginRequest( "leila@gmail.com", "pass1234");
+        User existingUser = new User( "leila@gmail.com", "pass1234");
         when(userRepositoryMock.findByEmailAndPassword(existingUser.getEmail(), existingUser.getPassword())).thenReturn(Optional.empty());
 
         ResponseEntity<?> loggedInUser = userService.login(existingUser);
         assertTrue("Invalid email or password",loggedInUser.getStatusCode().isError());
 
     }
+
 }
