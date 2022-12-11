@@ -1,21 +1,16 @@
-/* eslint-disable @next/next/no-img-element */
-import Head from 'next/head';
-import '../styles/globals.css';
-import type { AppProps } from 'next/app';
-import { ModalProvider } from '../context/ModalContext';
+import '../styles/globals.css'
+import type { AppProps } from 'next/app'
+import { RecoilRoot } from 'recoil'
 
-function App({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <>
-      <Head>
-        <title>Nextflix</title>
-        <meta name='description' content='Netflix clone, made using Next.js' />
-        <link rel='icon' href='/favicon.ico' />
-      </Head>
-      <ModalProvider>
+    <RecoilRoot>
+      {/* Higher Order Component */}
+      {/* <AuthProvider> */}
         <Component {...pageProps} />
-      </ModalProvider>
-    </>
-  );
+      {/* </AuthProvider> */}
+    </RecoilRoot>
+  )
 }
-export default App;
+
+export default MyApp

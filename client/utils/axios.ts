@@ -1,7 +1,11 @@
-import axios, { AxiosInstance } from 'axios';
+import axios from "axios";
 
-export default function getInstance(): AxiosInstance {
-  return axios.create({
-    baseURL: 'https://api.themoviedb.org/3',
-  });
-}
+export const axiosInstance = axios.create({
+    baseURL: "http://localhost:8090",
+    headers: {
+        'Content-Type': "application/json",
+         Accept: 'application/json'
+    }
+})
+
+export default axiosInstance
